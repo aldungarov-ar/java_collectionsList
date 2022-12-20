@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final TodoList todoList = new TodoList();
+    private static final TodoList TODO_LIST = new TodoList();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -15,44 +15,51 @@ public class Main {
             int index = input.indexOf(' ');
             String command = index != -1 ? input.substring(0, index) : input;
             String todo = input.substring(index + 1);
-            int numberOfBusiness;
 
-            switch (command) {
-                case "ADD" :
-                    if (Character.isDigit(todo.charAt(0))) {
-                        index = todo.indexOf(' ');
-                        numberOfBusiness = Integer.parseInt(todo.substring(0, index));
-                        todo = todo.substring(index + 1);
-                        todoList.add(numberOfBusiness, todo);
-                    } else {
-                        todoList.add(todo);
-                    }
-                    break;
-                case "EDIT" :
+            if (executeCommand(command, todo)) {
+                return;
+            }
+        }
+    }
+
+    private static boolean executeCommand(String command, String todo) {
+        int numberOfBusiness;
+        int index;
+        switch (command) {
+            case "ADD" :
+                if (Character.isDigit(todo.charAt(0))) {
                     index = todo.indexOf(' ');
                     numberOfBusiness = Integer.parseInt(todo.substring(0, index));
                     todo = todo.substring(index + 1);
-                    todoList.edit(numberOfBusiness, todo);
-                    break;
-                case "DELETE" :
-                    numberOfBusiness = Integer.parseInt(todo);
-                    todoList.delete(numberOfBusiness);
-                    break;
-                case "LIST" :
-                    if (todoList.getTodos().isEmpty()) {
-                        System.out.println("Список дел пуст");
-                    } else {
-                        Iterator<String> iterator = todoList.getTodos().iterator();
-                        int counter = 0;
-                        while (iterator.hasNext()) {
-                            System.out.println(counter + " - " + iterator.next());
-                            counter++;
-                        }
+                    TODO_LIST.add(numberOfBusiness, todo);
+                } else {
+                    TODO_LIST.add(todo);
+                }
+                break;
+            case "EDIT" :
+                index = todo.indexOf(' ');
+                numberOfBusiness = Integer.parseInt(todo.substring(0, index));
+                todo = todo.substring(index + 1);
+                TODO_LIST.edit(numberOfBusiness, todo);
+                break;
+            case "DELETE" :
+                numberOfBusiness = Integer.parseInt(todo);
+                TODO_LIST.delete(numberOfBusiness);
+                break;
+            case "LIST" :
+                if (TODO_LIST.getTodos().isEmpty()) {
+                    System.out.println("Список дел пуст");
+                } else {
+                    Iterator<String> iterator = TODO_LIST.getTodos().iterator();
+                    int counter = 0;
+                    while (iterator.hasNext()) {
+                        System.out.println(counter++ + " - " + iterator.next());
                     }
-                    break;
-                case "EXIT" :
-                    return;
-            }
+                }
+                break;
+            case "EXIT" :
+                return true;
         }
+        return false;
     }
 }
